@@ -1,13 +1,12 @@
-package com.example.myapplication
+package com.example.myapplication.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.myapplication.R
 
 sealed class NavDestination(val title: String, val route: String, val icon: ImageVector, val imageResId: Int? = null) {
     object Home : NavDestination(title = "Home", route = Routes.Home, icon = Icons.Filled.Home)

@@ -30,8 +30,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.feelings.DepressionScreen
-import com.example.myapplication.feelings.AnxietyScreen
+import com.example.myapplication.feelingScreens.DepressionScreen
+import com.example.myapplication.feelingScreens.AnxietyScreen
+import com.example.myapplication.navigation.NavDestination
+import com.example.myapplication.navigation.Routes
+import com.example.myapplication.components.KnowMoreAboutYourFeelings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,9 +67,7 @@ fun ScaffoldScreen() {
                     when (currentDestination?.destination?.route) {
                         Routes.Home, Routes.Tutorial, Routes.Settings -> { }
                         else -> {
-                            IconButton(onClick = {
-                                navController.popBackStack()
-                            }) {
+                            IconButton(onClick = navController::popBackStack) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
                                     contentDescription = "Localized description"
@@ -82,7 +83,7 @@ fun ScaffoldScreen() {
                             IconButton(onClick = {
                                 navController.navigate(Routes.Home) {
                                     popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                                        inclusive = true
                                     }
                                     launchSingleTop = true
                                     restoreState = true
@@ -90,7 +91,7 @@ fun ScaffoldScreen() {
                             }) {
                                 Icon(
                                     imageVector = Icons.Filled.Home,
-                                    contentDescription = "Home"
+                                    contentDescription = null
                                 )
                             }
                         }
@@ -117,7 +118,7 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController) {
             startDestination = Routes.Home,
         ) {
             composable(Routes.Home) { HomeScreen(navController) }
-            composable(Routes.Tutorial) { TutorialScreen() }
+            composable(Routes.Tutorial) { TutorialScreen(navController) }
             composable(Routes.Settings) { InfoScreen() }
             composable(Routes.Depression) { DepressionScreen() }
             composable(Routes.Relax) { RelaxScreen() }
