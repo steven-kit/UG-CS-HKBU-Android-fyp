@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -50,6 +51,16 @@ android {
 }
 
 dependencies {
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-auth")
+
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    val credentialsManagerVersion = "1.3.0"
+    implementation("androidx.credentials:credentials:$credentialsManagerVersion")
+    implementation("androidx.credentials:credentials-play-services-auth:$credentialsManagerVersion")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

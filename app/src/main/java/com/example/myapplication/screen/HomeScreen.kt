@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,10 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
 import com.example.myapplication.navigation.Routes
 import com.example.myapplication.components.KnowMoreAboutYourFeelings
 
@@ -50,7 +52,9 @@ fun Greeting() {
             Text(text = "Hello, please log in to explore more")
             Image(
                 painter = painterResource(id = R.drawable.greeting),
+                contentScale = ContentScale.Fit,
                 contentDescription = "Relax",
+                modifier = Modifier.size(248.dp)
             )
         }
     }
@@ -68,24 +72,22 @@ fun RelaxCard(modifier: Modifier = Modifier, navController: NavHostController) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.width(192.dp)
         ) {
-            Row {
-                Image(
-                    painter = painterResource(id = R.drawable.yoga),
-                    contentDescription = "Relax",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .size(56.dp)
-                        .padding(8.dp),
-                )
-                Text(
-                    text = "Relax Yourself",
-                    modifier = Modifier.padding(18.dp),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.yoga),
+                contentDescription = "Relax",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .size(86.dp)
+                    .padding(8.dp),
+            )
+            Text(
+                text = stringResource(id = R.string.relax),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.padding(18.dp)
+            )
             Icon(
                 Icons.Filled.ArrowForward, contentDescription = "Arrow Forward",
                 modifier = Modifier.padding(16.dp)

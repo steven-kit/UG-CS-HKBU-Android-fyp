@@ -1,6 +1,7 @@
 package com.example.myapplication.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.myapplication.R
 
 sealed class NavDestination(val title: String, val route: String, val icon: ImageVector, val imageResId: Int? = null) {
+    object Login : NavDestination(title = "Login", route = Routes.Login, icon = Icons.Filled.AccountCircle)
     object Home : NavDestination(title = "Home", route = Routes.Home, icon = Icons.Filled.Home)
 
     object Tutorial : NavDestination(title = "Tutorial", route = Routes.Tutorial, icon = Icons.Filled.Create)

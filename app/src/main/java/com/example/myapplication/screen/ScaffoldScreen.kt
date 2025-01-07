@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,7 +34,6 @@ import com.example.myapplication.feelingScreens.DepressionScreen
 import com.example.myapplication.feelingScreens.AnxietyScreen
 import com.example.myapplication.navigation.NavDestination
 import com.example.myapplication.navigation.Routes
-import com.example.myapplication.components.KnowMoreAboutYourFeelings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,13 +80,7 @@ fun ScaffoldScreen() {
                         Routes.Home, Routes.Tutorial, Routes.Settings -> { }
                         else -> {
                             IconButton(onClick = {
-                                navController.navigate(Routes.Home) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        inclusive = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                navController.navigate(Routes.Home)
                             }) {
                                 Icon(
                                     imageVector = Icons.Filled.Home,
@@ -117,6 +110,7 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController) {
             navController = navController,
             startDestination = Routes.Home,
         ) {
+            composable(Routes.Login) { LoginScreen(navController) }
             composable(Routes.Home) { HomeScreen(navController) }
             composable(Routes.Tutorial) { TutorialScreen(navController) }
             composable(Routes.Settings) { InfoScreen() }
@@ -129,29 +123,31 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val currentDestination = navController.currentBackStackEntryAsState()
     var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf(
+    val navigationBarItems = listOf(
         NavDestination.Home,
         NavDestination.Tutorial,
-        NavDestination.Info
+        NavDestination.Info,
+        NavDestination.Login
     )
-    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+    val currentRoute = currentDestination.value?.destination?.route
 
-    if (currentDestination !in items.map { it.route }) {
+    if (currentRoute !in navigationBarItems.map { it.route }) {
         return
     }
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.outlineVariant
     ) {
-        items.forEachIndexed { index, item ->
+        navigationBarItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = null) },
                 label = { Text(item.title) },
-                selected = selectedItem == index,
+                selected = currentRoute == item.route,
                 onClick = {
                     selectedItem = index
-                    navController.navigate(items[selectedItem].route) {
+                    navController.navigate(navigationBarItems[selectedItem].route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }

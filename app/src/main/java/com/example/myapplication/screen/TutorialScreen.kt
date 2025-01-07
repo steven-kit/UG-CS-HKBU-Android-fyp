@@ -1,8 +1,11 @@
-package com.example.myapplication
+package com.example.myapplication.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -13,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myapplication.R
 import com.example.myapplication.components.KnowMoreAboutYourFeelings
 import kotlinx.coroutines.launch
 
@@ -46,7 +50,8 @@ fun TutorialScreen(navController: NavHostController) {
 
 @Composable
 fun IntroductionPage(onNextClick: () -> Unit) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp)
+        .fillMaxWidth()) {
         Text(
             text = "引言",
             style = MaterialTheme.typography.labelLarge,
@@ -58,8 +63,11 @@ fun IntroductionPage(onNextClick: () -> Unit) {
             color = Color.DarkGray,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Button(onClick = onNextClick, modifier = Modifier.align(Alignment.End)) {
-            Text("Next")
+        IconButton(onClick = onNextClick,
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Icon(Icons.Filled.ArrowForward,
+                contentDescription = "Next")
         }
     }
 }
@@ -81,11 +89,15 @@ fun SurveyFormPage(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            Button(onClick = onPreviousClick) {
-                Text("Previous")
+            IconButton(onClick = onPreviousClick
+            ) {
+                Icon(Icons.Filled.ArrowBack,
+                    contentDescription = "Back")
             }
-            Button(onClick = onNextClick) {
-                Text("Next")
+            IconButton(onClick = onNextClick
+            ) {
+                Icon(Icons.Filled.ArrowForward,
+                    contentDescription = "Next")
             }
         }
     }
@@ -117,10 +129,10 @@ fun GraphPage(onPreviousClick: () -> Unit, navController: NavHostController) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
         KnowMoreAboutYourFeelings(navController)
-        Button(onClick = onPreviousClick, modifier = Modifier
-            .align(Alignment.Start)
-            .padding(top = 16.dp)) {
-            Text("Previous")
+        IconButton(onClick = onPreviousClick
+        ) {
+            Icon(Icons.Filled.ArrowBack,
+                contentDescription = "Back")
         }
     }
 }
