@@ -10,10 +10,8 @@ import com.example.myapplication.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -35,6 +33,32 @@ class AuthenticationManager(private val context: Context) {
         return digest.fold("") { str, it ->
             str + "%02x".format(it)
         }
+    }
+
+    fun createAccountWithEmail(email: String, password: String): Flow<AuthResponse> = callbackFlow {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(AuthResponse.Success)
+                } else {
+                    trySend(AuthResponse.Error(message = it.exception?.message ?: "Unknown error"))
+                }
+            }
+
+        awaitClose()
+    }
+
+    fun signInWithEmail(email: String, password: String): Flow<AuthResponse> = callbackFlow {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    trySend(AuthResponse.Success)
+                } else {
+                    trySend(AuthResponse.Error(message = it.exception?.message ?: "Unknown error"))
+                }
+            }
+
+        awaitClose()
     }
 
     fun signInWithGoogle(): Flow<AuthResponse> = callbackFlow {

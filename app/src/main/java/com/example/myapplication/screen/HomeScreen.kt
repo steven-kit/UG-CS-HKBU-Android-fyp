@@ -22,25 +22,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.UserViewModel
 import com.example.myapplication.navigation.Routes
 import com.example.myapplication.components.KnowMoreAboutYourFeelings
 
 @Composable
-fun HomeScreen(navController: NavHostController){
+fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
     Column() {
-        Greeting()
+        Greeting(userViewModel)
         RelaxCard(navController = navController)
         KnowMoreAboutYourFeelings(navController)
     }
 }
 
 @Composable
-fun Greeting() {
+fun Greeting(userViewModel: UserViewModel) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +48,7 @@ fun Greeting() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = "Hello, please log in to explore more")
+            Text(text = if (userViewModel.isLoggedIn.value) "Hello" else "Hello, please log in to explore more")
             Image(
                 painter = painterResource(id = R.drawable.greeting),
                 contentScale = ContentScale.Fit,
@@ -94,10 +93,4 @@ fun RelaxCard(modifier: Modifier = Modifier, navController: NavHostController) {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
 }

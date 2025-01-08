@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -30,6 +31,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.UserViewModel
+import com.example.myapplication.auth.AuthenticationManager
 import com.example.myapplication.feelingScreens.DepressionScreen
 import com.example.myapplication.feelingScreens.AnxietyScreen
 import com.example.myapplication.navigation.NavDestination
@@ -39,6 +42,13 @@ import com.example.myapplication.navigation.Routes
 @Composable
 fun ScaffoldScreen() {
     val navController = rememberNavController()
+
+    val context = LocalContext.current
+    val authenticationManager = remember {
+        AuthenticationManager(context)
+    }
+    val userViewModel = remember { UserViewModel(authenticationManager) }
+
     val currentDestination by navController.currentBackStackEntryAsState()
     val items = listOf(
         NavDestination.Home,
@@ -96,13 +106,13 @@ fun ScaffoldScreen() {
             BottomNavigationBar(navController)
         },
         content = { innerPadding ->
-            Content(innerPadding, navController)
+            Content(innerPadding, navController, userViewModel)
         }
     )
 }
 
 @Composable
-fun Content(innerPadding: PaddingValues, navController: NavHostController) {
+fun Content(innerPadding: PaddingValues, navController: NavHostController, userViewModel: UserViewModel) {
     Column(
         modifier = Modifier.padding(innerPadding),
     ) {
@@ -110,10 +120,10 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController) {
             navController = navController,
             startDestination = Routes.Home,
         ) {
-            composable(Routes.Login) { LoginScreen(navController) }
-            composable(Routes.Home) { HomeScreen(navController) }
+            composable(Routes.Login) { LoginScreen(navController, userViewModel) }
+            composable(Routes.Home) { HomeScreen(navController, userViewModel) }
             composable(Routes.Tutorial) { TutorialScreen(navController) }
-            composable(Routes.Settings) { InfoScreen() }
+            composable(Routes.Settings) { SettingsScreen(navController, userViewModel) }
             composable(Routes.Depression) { DepressionScreen() }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anxiety) { AnxietyScreen() }
@@ -128,8 +138,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navigationBarItems = listOf(
         NavDestination.Home,
         NavDestination.Tutorial,
-        NavDestination.Info,
-        NavDestination.Login
+        NavDestination.Info
     )
     val currentRoute = currentDestination.value?.destination?.route
 

@@ -2,7 +2,7 @@ package com.example.myapplication.components
 
 import android.content.ClipDescription
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,7 +44,6 @@ fun QuestionCard(title: String, question: String, answer: String) {
     Box(
         modifier = Modifier
             .padding(16.dp)
-            .background(Color.Cyan, shape = RoundedCornerShape(16.dp))
             .fillMaxWidth()
             .height(200.dp)
             .dragAndDropTarget(
@@ -53,6 +52,7 @@ fun QuestionCard(title: String, question: String, answer: String) {
                 },
                 target = callback
             )
+            .border(1.dp, Color.Cyan, RoundedCornerShape(8.dp))
     ) {
         Column(
             modifier = Modifier
