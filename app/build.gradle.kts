@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.edu.hkbu.comp.fyp.emier"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.edu.hkbu.comp.fyp.emier"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -28,6 +28,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -56,11 +57,20 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation(libs.firebase.auth.ktx)
 
     val credentialsManagerVersion = "1.3.0"
     implementation("androidx.credentials:credentials:$credentialsManagerVersion")
     implementation("androidx.credentials:credentials-play-services-auth:$credentialsManagerVersion")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+    // exo player
+    val exoPlayerVersion = "1.2.1"
+    implementation("androidx.media3:media3-exoplayer:$exoPlayerVersion")
+    implementation("androidx.media3:media3-ui:$exoPlayerVersion")
+    implementation("androidx.media3:media3-common:$exoPlayerVersion")
+
+    implementation("androidx.compose.material:material:1.5.4")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -71,6 +81,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
