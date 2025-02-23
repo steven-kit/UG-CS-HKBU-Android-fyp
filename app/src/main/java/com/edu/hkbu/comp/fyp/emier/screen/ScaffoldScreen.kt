@@ -38,6 +38,10 @@ import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DepressionScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AnxietyScreen
 import com.edu.hkbu.comp.fyp.emier.navigation.NavDestination
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
+import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AngerScreen
+import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.GuiltScreen
+import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.LonelyScreen
+import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
 
 @Composable
 fun ScaffoldScreen() {
@@ -52,21 +56,10 @@ fun ScaffoldScreen() {
     }
 
     val currentDestination by navController.currentBackStackEntryAsState()
-    val items = listOf(
-        NavDestination.Home,
-        NavDestination.Tutorial,
-        NavDestination.Info,
-        NavDestination.Relax,
-        NavDestination.Depression,
-        NavDestination.Anger,
-        NavDestination.Anxiety,
-        NavDestination.Disappointment,
-        NavDestination.Fear
-    )
 
     Scaffold(
         topBar = {
-            Mytopbar(currentDestination, navController)
+            MyTopBar(currentDestination, navController)
         },
         bottomBar = {
             BottomNavigationBar(navController)
@@ -79,7 +72,7 @@ fun ScaffoldScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Mytopbar(currentDestination: NavBackStackEntry?, navController: NavHostController) {
+fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostController) {
 
     if (currentDestination?.destination?.route == Routes.Splash) {
         return
@@ -133,16 +126,21 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController, userV
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Splash,
+            startDestination = Routes.Guide,
         ) {
-            composable(Routes.Splash) { SplashScreen(navController) }
+            composable(Routes.Guide) { GuideScreen(navController) }
             composable(Routes.Login) { LoginScreen(navController, userViewModel) }
             composable(Routes.Home) { HomeScreen(navController, userViewModel) }
             composable(Routes.Tutorial) { TutorialScreen(navController) }
             composable(Routes.Settings) { SettingsScreen(navController, userViewModel) }
-            composable(Routes.Depression) { DepressionScreen() }
             composable(Routes.Relax) { RelaxScreen() }
+            composable(Routes.Anger) { AngerScreen() }
             composable(Routes.Anxiety) { AnxietyScreen() }
+            composable(Routes.Depression) { DepressionScreen() }
+            composable(Routes.Disappointment) { DepressionScreen() }
+            composable(Routes.Guilt) { GuiltScreen() }
+            composable(Routes.Lonely) { LonelyScreen() }
+            composable(Routes.Nervous) { NervousScreen() }
         }
     }
 }
@@ -154,7 +152,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navigationBarItems = listOf(
         NavDestination.Home,
         NavDestination.Tutorial,
-        NavDestination.Info
+        NavDestination.Settings
     )
     val currentRoute = currentDestination.value?.destination?.route
 

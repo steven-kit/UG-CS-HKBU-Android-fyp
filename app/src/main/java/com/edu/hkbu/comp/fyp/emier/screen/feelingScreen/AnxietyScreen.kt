@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.core.design.component.QuestionCard
-import com.edu.hkbu.comp.fyp.emier.helper.annotatedStringResource
+import com.edu.hkbu.comp.fyp.emier.utils.annotatedStringResource
 
 data class Section(@StringRes val titleId: Int, @StringRes val contentId: Int, val items: List<Pair<Int, Int>> = emptyList(), @DrawableRes val imageId: Int = 0)
 

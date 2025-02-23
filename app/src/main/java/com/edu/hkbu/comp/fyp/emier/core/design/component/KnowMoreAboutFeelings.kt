@@ -37,11 +37,13 @@ fun KnowMoreAboutYourFeelings(navController: NavHostController, modifier: Modifi
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items(listOf(
-            "抑鬱" to NavDestination.Depression,
             "憤怒" to NavDestination.Anger,
             "焦慮" to NavDestination.Anxiety,
-            "恐懼" to NavDestination.Fear,
+            "抑鬱" to NavDestination.Depression,
             "失望" to NavDestination.Disappointment,
+            "内疚" to NavDestination.Guilt,
+            "孤獨" to NavDestination.Lonely,
+            "緊張" to NavDestination.Nervous
         )) { (feeling, destination) ->
             FeelingIcon(feeling, destination, navController)
         }
