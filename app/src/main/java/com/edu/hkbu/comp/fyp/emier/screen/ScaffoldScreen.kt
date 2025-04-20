@@ -33,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.edu.hkbu.comp.fyp.emier.R
+import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DepressionScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AnxietyScreen
 import com.edu.hkbu.comp.fyp.emier.navigation.NavDestination
@@ -44,11 +45,11 @@ import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.LonelyScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
 
 @Composable
-fun ScaffoldScreen() {
-    val navController = rememberNavController()
-
-    val playerViewModel: VideoPlayerViewModel = viewModel()
-
+fun ScaffoldScreen(navController: NavHostController,
+                   userViewModel: UserViewModel,
+                   playerViewModel: VideoPlayerViewModel,
+                   startDestination: String
+) {
     val currentDestination by navController.currentBackStackEntryAsState()
 
     Scaffold(
@@ -59,7 +60,7 @@ fun ScaffoldScreen() {
             BottomNavigationBar(navController)
         },
         content = { innerPadding ->
-            Content(innerPadding, navController, playerViewModel)
+            Content(innerPadding, navController, playerViewModel, userViewModel, startDestination)
         }
     )
 }
@@ -117,19 +118,21 @@ fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostContr
 fun Content(
     innerPadding: PaddingValues,
     navController: NavHostController,
-    playerViewModel: VideoPlayerViewModel
+    playerViewModel: VideoPlayerViewModel,
+    userViewModel: UserViewModel,
+    startDestination: String
 ) {
     Column(
         modifier = Modifier.padding(innerPadding),
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Guide,
+            startDestination = startDestination,
         ) {
             composable(Routes.Guide) { GuideScreen(navController, playerViewModel) }
-            composable(Routes.Home) { HomeScreen(navController) }
+            composable(Routes.Home) { HomeScreen(navController, userViewModel) }
             composable(Routes.Tutorial) { TutorialScreen(navController) }
-            composable(Routes.Settings) { SettingsScreen() }
+            composable(Routes.Settings) { SettingsScreen(userViewModel) }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anger) { AngerScreen() }
             composable(Routes.Anxiety) { AnxietyScreen(playerViewModel) }
@@ -182,10 +185,4 @@ fun BottomNavigationBar(navController: NavHostController) {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScaffoldPreview() {
-    ScaffoldScreen()
 }

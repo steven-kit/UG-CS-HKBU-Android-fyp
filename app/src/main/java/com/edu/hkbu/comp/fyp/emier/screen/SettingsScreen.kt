@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.MainActivity
 import com.edu.hkbu.comp.fyp.emier.auth.TokenStorage
+import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.core.design.component.ConnectToGarminButton
 import com.edu.hkbu.comp.fyp.emier.core.design.component.DisconnectToGarminButton
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 data class UserPreference(val fontSize: Float)
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(userViewModel: UserViewModel) {
     val connectionResult = MainActivity.connectionResult
 
     var expanded by remember { mutableStateOf(false) }
@@ -29,18 +30,18 @@ fun SettingsScreen() {
     val fontSizes = listOf(12.sp, 16.sp, 20.sp)
 
     val context = LocalContext.current
-    var token by remember { mutableStateOf(TokenStorage.getToken(context)) }
+    val token = userViewModel.token.value
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "連接Garmin Connect", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         if (token.isNullOrBlank()) {
             ConnectToGarminButton(onConnected = {
-                token = TokenStorage.getToken(context)
+                userViewModel.loadToken(context)
             })
             Log.d("SettingsScreen", "User Access Token: ${TokenStorage.getToken(LocalContext.current)}")
         } else {
             DisconnectToGarminButton(onDisconnected = {
-                token = null
+                userViewModel.clearToken(context)
             })
             Log.d("SettingsScreen", "User Access Token: ${TokenStorage.getToken(LocalContext.current)}")
         }

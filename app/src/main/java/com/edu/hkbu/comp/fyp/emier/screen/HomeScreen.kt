@@ -20,25 +20,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.R
+import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
 import com.edu.hkbu.comp.fyp.emier.core.design.component.KnowMoreAboutYourFeelings
 
 @Composable
-fun HomeScreen(navController: NavHostController){
+fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
     Column() {
-        Greeting()
+        Greeting(userViewModel)
         RelaxCard(navController = navController)
         KnowMoreAboutYourFeelings(navController)
     }
 }
 
 @Composable
-fun Greeting() {
+fun Greeting(userViewModel: UserViewModel) {
+    val token = userViewModel.token.value
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +52,11 @@ fun Greeting() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = if (true) "你好" else "你好，請登入以解鎖更多功能")
+            Text(
+                text = if (token.isNullOrBlank()) "你好，請連接Garmin以解鎖更多功能" else "祝你有愉快的每一天",
+                modifier = Modifier.width(200.dp),
+                textAlign = TextAlign.Center
+            )
             Image(
                 painter = painterResource(id = R.drawable.greeting),
                 contentScale = ContentScale.Fit,

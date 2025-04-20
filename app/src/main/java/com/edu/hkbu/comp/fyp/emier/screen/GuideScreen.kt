@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.utils.ExpandableAnnotatedText
+import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
 
 @Composable
@@ -233,7 +234,10 @@ fun GuidePage4(
         Spacer(modifier = Modifier.height(16.dp))
         ExpandableAnnotatedText(id = R.string.splash_page4, fontSize = 16.sp)
         Button(
-            onClick = { navController.navigate("home") },
+            onClick = {
+                PreferencesUtil.setHasSeenGuide(context)
+                navController.navigate("home")
+                      },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text("開始")

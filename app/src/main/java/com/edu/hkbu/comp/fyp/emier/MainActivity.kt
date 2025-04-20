@@ -12,14 +12,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.edu.hkbu.comp.fyp.emier.auth.TokenStorage
+import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.screen.ScaffoldScreen
 import com.edu.hkbu.comp.fyp.emier.core.design.theme.AppTheme
+import com.edu.hkbu.comp.fyp.emier.navigation.Routes
+import com.edu.hkbu.comp.fyp.emier.screen.GuideScreen
+import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
+import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -36,13 +41,24 @@ class MainActivity : ComponentActivity() {
         handleDeepLink(intent)
 
         setContent {
+            val navController = rememberNavController()
+
+            val playerViewModel: VideoPlayerViewModel = viewModel()
+
+            val userViewModel: UserViewModel = viewModel()
+            userViewModel.loadToken(this)
+
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ScaffoldScreen()
+                    ScaffoldScreen(
+                        navController = navController,
+                        userViewModel = userViewModel,
+                        playerViewModel = playerViewModel,
+                        startDestination = if (PreferencesUtil.hasSeenGuide(this)) Routes.Home else Routes.Guide
+                    )
                 }
             }
         }
@@ -65,13 +81,5 @@ class MainActivity : ComponentActivity() {
                 connectionResult.value = "連結失敗，請重試。"
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppTheme {
-        ScaffoldScreen()
     }
 }

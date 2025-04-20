@@ -74,7 +74,7 @@ fun DisconnectToGarminButton(onDisconnected: () -> Unit) {
                 }
             },
             title = { Text("斷開Garmin連結") },
-            text = { Text("確定斷開與Garmin的連結嗎？您的賬戶將會被刪除。") }
+            text = { Text("確定斷開與Garmin的連結嗎？之後可以使用同樣賬戶登入。") }
         )
     }
 
