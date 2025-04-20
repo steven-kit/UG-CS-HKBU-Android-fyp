@@ -34,8 +34,8 @@ class VideoPlayerViewModel: ViewModel() {
                 setMediaItem(MediaItem.fromUri(
                     "android.resource://${context.packageName}/${mediaItem}"
                 ))
-                playWhenReady = true
                 prepare()
+                playWhenReady = true
                 play()
             }
         }

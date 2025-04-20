@@ -18,19 +18,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.R
 
-data class Video(val id: Int, val title: String, val thumbnail: Int?)
+data class Video(
+    val id: Int,
+    val title: String,
+    val videoResId: Int
+)
 
 @Composable
-fun TutorialScreen(navController: NavHostController) {
+fun TutorialScreen(navController: NavHostController, playerViewModel: VideoPlayerViewModel) {
+    val context = LocalContext.current
     val videos = listOf(
-        Video(1, "Video 1", null),
-        Video(2, "Video 2", null),
-        // Add more videos here
+        Video(1, "Introduction to Depression", R.raw.depression_part1),
+        Video(2, "Automatic Thoughts", R.raw.depression_part2),
+        Video(3, "Depression Story", R.raw.depression_story),
+        Video(4, "Guide Introduction", R.raw.introduction),
+        Video(5, "CBT Overview", R.raw.cbt)
     )
 
     LazyColumn(
@@ -40,7 +48,7 @@ fun TutorialScreen(navController: NavHostController) {
     ) {
         items(videos) { video ->
             VideoItem(video = video, onClick = {
-                // Handle video item click, e.g., navigate to video player screen
+                navController.navigate("video/${video.id}")
             })
             Divider(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
@@ -53,49 +61,27 @@ fun TutorialScreen(navController: NavHostController) {
 
 @Composable
 fun VideoItem(video: Video, onClick: () -> Unit) {
-    Surface(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable(onClick = onClick),
-        shape = MaterialTheme.shapes.medium,
-        shadowElevation = 4.dp
+            .padding(8.dp)
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            if (video.thumbnail != null) {
-                Image(
-                    painter = painterResource(id = video.thumbnail),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 16.dp)
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 16.dp)
-                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(
-                    text = video.title,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            Icon(
-                imageVector = Icons.Filled.PlayArrow,
-                contentDescription = null,
-                modifier = Modifier.size(32.dp)
-            )
-        }
+        Icon(
+            imageVector = Icons.Default.PlayArrow,
+            contentDescription = "Play Video",
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = video.title,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

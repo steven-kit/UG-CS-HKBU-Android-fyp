@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedCard
@@ -55,12 +56,14 @@ fun PageContent(
     items: List<Pair<Int, Int>>,
     @DrawableRes imageId: Int,
     viewModel: VideoPlayerViewModel,
-    context: Context
+    context: Context,
+    pagerState: PagerState,
+    currentPage: Int
 ) {
-    var isPlaying by remember {
-        mutableStateOf(false)
-    }
+    var isPlaying by remember { mutableStateOf(false) }
     viewModel.mediaItem = videoId
+
+    val isCurrentPage = pagerState.currentPage == currentPage
 
     val scrollState = rememberScrollState()
 
@@ -141,14 +144,17 @@ fun PageContent(
         }
     }
 
-    LaunchedEffect(key1 = viewModel.mediaItem) {
-        if (videoId != 0) {
+    LaunchedEffect(isCurrentPage) {
+        if (isCurrentPage && videoId != 0) {
             isPlaying = true
             viewModel.apply {
                 releasePlayer()
                 initializePlayer(context)
                 playVideo(context)
             }
+        } else {
+            isPlaying = false
+            viewModel.releasePlayer()
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,7 +28,7 @@ fun DepressionScreen(playerViewModel: VideoPlayerViewModel) {
                 R.string.symptoms_behavioral to R.string.depression_symptoms_behavioral
             )
         ),
-        Section(R.string.automatic_thoughts, R.string.depression_intro2, R.raw.depression_second),
+        Section(R.string.automatic_thoughts, R.string.depression_intro2, R.raw.depression_part2),
         Section(R.string.story, R.string.depression_story, R.raw.depression_story)
     )
     val pagerState = rememberPagerState(
@@ -41,13 +42,18 @@ fun DepressionScreen(playerViewModel: VideoPlayerViewModel) {
         userScrollEnabled = true,
         modifier = Modifier.fillMaxSize()
     ) { page ->
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = true,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            val section = sections[page]
-            PageContent(titleId = section.titleId, contentId = section.contentId, videoId = section.videoId, items = section.items, imageId = section.imageId, context = context, viewModel = viewModel)
-        }
+        val section = sections[page]
+        val pageViewModel = remember { VideoPlayerViewModel() }
+        PageContent(
+            titleId = section.titleId,
+            contentId = section.contentId,
+            videoId = section.videoId,
+            items = section.items,
+            imageId = section.imageId,
+            context = context,
+            viewModel = pageViewModel,
+            pagerState = pagerState,
+            currentPage = page
+        )
     }
 }

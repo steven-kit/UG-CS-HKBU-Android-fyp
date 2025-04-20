@@ -34,6 +34,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
+import com.edu.hkbu.comp.fyp.emier.core.design.component.VideoDetailScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DepressionScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AnxietyScreen
 import com.edu.hkbu.comp.fyp.emier.navigation.NavDestination
@@ -125,13 +126,21 @@ fun Content(
     Column(
         modifier = Modifier.padding(innerPadding),
     ) {
+        val videos = listOf(
+            Video(1, "認識抑鬱", R.raw.depression_part1),
+            Video(2, "抑鬱的思想陷阱", R.raw.depression_part2),
+            Video(3, "抑鬱故事", R.raw.depression_story),
+            Video(4, "認識你的情緒", R.raw.introduction),
+            Video(5, "認知行爲治療", R.raw.cbt)
+        )
+
         NavHost(
             navController = navController,
             startDestination = startDestination,
         ) {
             composable(Routes.Guide) { GuideScreen(navController, playerViewModel) }
             composable(Routes.Home) { HomeScreen(navController, userViewModel) }
-            composable(Routes.Tutorial) { TutorialScreen(navController) }
+            composable(Routes.Tutorial) { TutorialScreen(navController, playerViewModel) }
             composable(Routes.Settings) { SettingsScreen(userViewModel) }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anger) { AngerScreen() }
@@ -141,6 +150,13 @@ fun Content(
             composable(Routes.Guilt) { GuiltScreen() }
             composable(Routes.Lonely) { LonelyScreen() }
             composable(Routes.Nervous) { NervousScreen() }
+            composable("video/{videoId}") { backStackEntry ->
+                val videoId = backStackEntry.arguments?.getString("videoId")?.toIntOrNull()
+                val video = videos.find { it.id == videoId }
+                if (video != null) {
+                    VideoDetailScreen(video = video, playerViewModel = playerViewModel)
+                }
+            }
         }
     }
 }

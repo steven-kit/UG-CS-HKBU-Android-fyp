@@ -61,6 +61,14 @@ fun AnxietyScreen(playerViewModel: VideoPlayerViewModel) {
         modifier = Modifier.fillMaxSize()
     ) { page ->
         val section = sections[page]
-        PageContent(titleId = section.titleId, contentId = section.contentId, videoId = section.videoId, items = section.items, imageId = section.imageId, context = context, viewModel = viewModel)
+        PageContent(titleId = section.titleId,
+            contentId = section.contentId,
+            videoId = section.videoId,
+            items = section.items,
+            imageId = section.imageId,
+            context = context, viewModel = viewModel,
+            pagerState = pagerState,
+            currentPage = page
+            )
     }
 }
