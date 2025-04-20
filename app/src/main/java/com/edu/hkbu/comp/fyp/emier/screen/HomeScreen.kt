@@ -25,21 +25,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.R
-import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
 import com.edu.hkbu.comp.fyp.emier.core.design.component.KnowMoreAboutYourFeelings
 
 @Composable
-fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
+fun HomeScreen(navController: NavHostController){
     Column() {
-        Greeting(userViewModel)
+        Greeting()
         RelaxCard(navController = navController)
         KnowMoreAboutYourFeelings(navController)
     }
 }
 
 @Composable
-fun Greeting(userViewModel: UserViewModel) {
+fun Greeting() {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,7 +47,7 @@ fun Greeting(userViewModel: UserViewModel) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = if (userViewModel.isLoggedIn.value) "Hello" else "Hello, please log in to explore more")
+            Text(text = if (true) "你好" else "你好，請登入以解鎖更多功能")
             Image(
                 painter = painterResource(id = R.drawable.greeting),
                 contentScale = ContentScale.Fit,

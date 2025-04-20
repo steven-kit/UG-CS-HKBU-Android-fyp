@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -12,8 +11,8 @@ android {
         applicationId = "com.edu.hkbu.comp.fyp.emier"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,16 +52,7 @@ android {
 
 dependencies {
 
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-auth")
-
     implementation("com.google.android.gms:play-services-auth:21.3.0")
-    implementation(libs.firebase.auth.ktx)
-
-    val credentialsManagerVersion = "1.3.0"
-    implementation("androidx.credentials:credentials:$credentialsManagerVersion")
-    implementation("androidx.credentials:credentials-play-services-auth:$credentialsManagerVersion")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     // exo player
     val exoPlayerVersion = "1.2.1"
@@ -71,6 +61,16 @@ dependencies {
     implementation("androidx.media3:media3-common:$exoPlayerVersion")
 
     implementation("androidx.compose.material:material:1.5.4")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation("org.jsoup:jsoup:1.15.4")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

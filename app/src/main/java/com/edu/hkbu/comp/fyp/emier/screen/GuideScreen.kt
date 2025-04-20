@@ -39,17 +39,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.edu.hkbu.comp.fyp.emier.R
-import com.edu.hkbu.comp.fyp.emier.core.design.component.ExpandableText
+import com.edu.hkbu.comp.fyp.emier.utils.ExpandableAnnotatedText
 
 
 @Composable
-fun GuideScreen(navController: NavController) {
+fun GuideScreen(navController: NavController, playerViewModel: VideoPlayerViewModel) {
     val pagerState = rememberPagerState(pageCount = {
         4
     })
 
     val context = LocalContext.current
-    val viewModel: VideoPlayerViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -65,7 +64,7 @@ fun GuideScreen(navController: NavController) {
         ) { page ->
             when (page) {
                 0 -> {
-                    GuidePage1(R.raw.introduction, viewModel, context)
+                    GuidePage1(R.raw.introduction, playerViewModel, context)
                 }
 
                 1 -> {
@@ -77,7 +76,7 @@ fun GuideScreen(navController: NavController) {
                 }
 
                 3 -> {
-                    GuidePage4(navController, R.raw.cbt, viewModel, context)
+                    GuidePage4(navController, R.raw.cbt, playerViewModel, context)
                 }
             }
         }
@@ -108,31 +107,31 @@ fun GuideScreen(navController: NavController) {
 @Composable
 fun GuidePage1(
     videoResId: Int,
-    viewModel: VideoPlayerViewModel,
+    playerViewModel: VideoPlayerViewModel,
     context: Context
 ) {
     var isPlaying by remember {
         mutableStateOf(false)
     }
-    viewModel.mediaItem = videoResId
+    playerViewModel.mediaItem = videoResId
 
     Column(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        VideoPlayer(viewModel = viewModel,
+        VideoPlayer(viewModel = playerViewModel,
             isPlaying = isPlaying,
             onPlayerClosed = { isVideoPlaying ->
                 isPlaying = isVideoPlaying
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        ExpandableText(text = stringResource(id = R.string.splash_page1), fontSize = 16.sp)
+        ExpandableAnnotatedText(id = R.string.splash_page1, fontSize = 16.sp)
 
-        LaunchedEffect(key1 = viewModel.mediaItem) {
+        LaunchedEffect(key1 = playerViewModel.mediaItem) {
             isPlaying = true
-            viewModel.apply {
+            playerViewModel.apply {
                 releasePlayer()
                 initializePlayer(context)
                 playVideo(context)
@@ -211,13 +210,13 @@ fun GuidePage3() {
 fun GuidePage4(
     navController: NavController,
     videoResId: Int,
-    viewModel: VideoPlayerViewModel,
+    playerViewModel: VideoPlayerViewModel,
     context: Context
 ) {
     var isPlaying by remember {
         mutableStateOf(false)
     }
-    viewModel.mediaItem = videoResId
+    playerViewModel.mediaItem = videoResId
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -225,14 +224,14 @@ fun GuidePage4(
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        VideoPlayer(viewModel = viewModel,
+        VideoPlayer(viewModel = playerViewModel,
             isPlaying = isPlaying,
             onPlayerClosed = { isVideoPlaying ->
                 isPlaying = isVideoPlaying
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        ExpandableText(text = stringResource(id = R.string.splash_page4), fontSize = 16.sp)
+        ExpandableAnnotatedText(id = R.string.splash_page4, fontSize = 16.sp)
         Button(
             onClick = { navController.navigate("home") },
             modifier = Modifier.align(Alignment.End)
@@ -240,9 +239,9 @@ fun GuidePage4(
             Text("開始")
         }
 
-        LaunchedEffect(key1 = viewModel.mediaItem) {
+        LaunchedEffect(key1 = playerViewModel.mediaItem) {
             isPlaying = true
-            viewModel.apply {
+            playerViewModel.apply {
                 releasePlayer()
                 initializePlayer(context)
                 playVideo(context)

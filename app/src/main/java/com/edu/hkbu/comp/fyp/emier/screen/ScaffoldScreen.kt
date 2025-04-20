@@ -14,7 +14,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -23,8 +22,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -32,13 +32,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
-import com.edu.hkbu.comp.fyp.emier.auth.AuthenticationManager
+import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DepressionScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AnxietyScreen
 import com.edu.hkbu.comp.fyp.emier.navigation.NavDestination
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.AngerScreen
+import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DisappointmentScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.GuiltScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.LonelyScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
@@ -47,13 +47,7 @@ import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
 fun ScaffoldScreen() {
     val navController = rememberNavController()
 
-    val context = LocalContext.current
-    val authenticationManager = remember {
-        AuthenticationManager(context)
-    }
-    val userViewModel = remember {
-        UserViewModel(authenticationManager)
-    }
+    val playerViewModel: VideoPlayerViewModel = viewModel()
 
     val currentDestination by navController.currentBackStackEntryAsState()
 
@@ -65,7 +59,7 @@ fun ScaffoldScreen() {
             BottomNavigationBar(navController)
         },
         content = { innerPadding ->
-            Content(innerPadding, navController, userViewModel)
+            Content(innerPadding, navController, playerViewModel)
         }
     )
 }
@@ -74,7 +68,7 @@ fun ScaffoldScreen() {
 @Composable
 fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostController) {
 
-    if (currentDestination?.destination?.route == Routes.Splash) {
+    if (currentDestination?.destination?.route == Routes.Guide) {
         return
     }
     
@@ -86,7 +80,7 @@ fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostContr
 //        } 
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.outlineVariant
+            containerColor = colorResource(id = R.color.blue)
         ),
         navigationIcon = {
             when (currentDestination?.destination?.route) {
@@ -120,7 +114,11 @@ fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostContr
 }
 
 @Composable
-fun Content(innerPadding: PaddingValues, navController: NavHostController, userViewModel: UserViewModel) {
+fun Content(
+    innerPadding: PaddingValues,
+    navController: NavHostController,
+    playerViewModel: VideoPlayerViewModel
+) {
     Column(
         modifier = Modifier.padding(innerPadding),
     ) {
@@ -128,16 +126,15 @@ fun Content(innerPadding: PaddingValues, navController: NavHostController, userV
             navController = navController,
             startDestination = Routes.Guide,
         ) {
-            composable(Routes.Guide) { GuideScreen(navController) }
-            composable(Routes.Login) { LoginScreen(navController, userViewModel) }
-            composable(Routes.Home) { HomeScreen(navController, userViewModel) }
+            composable(Routes.Guide) { GuideScreen(navController, playerViewModel) }
+            composable(Routes.Home) { HomeScreen(navController) }
             composable(Routes.Tutorial) { TutorialScreen(navController) }
-            composable(Routes.Settings) { SettingsScreen(navController, userViewModel) }
+            composable(Routes.Settings) { SettingsScreen() }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anger) { AngerScreen() }
-            composable(Routes.Anxiety) { AnxietyScreen() }
-            composable(Routes.Depression) { DepressionScreen() }
-            composable(Routes.Disappointment) { DepressionScreen() }
+            composable(Routes.Anxiety) { AnxietyScreen(playerViewModel) }
+            composable(Routes.Depression) { DepressionScreen(playerViewModel) }
+            composable(Routes.Disappointment) { DisappointmentScreen() }
             composable(Routes.Guilt) { GuiltScreen() }
             composable(Routes.Lonely) { LonelyScreen() }
             composable(Routes.Nervous) { NervousScreen() }
@@ -161,12 +158,11 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.outlineVariant
+        containerColor = colorResource(id = R.color.blue)
     ) {
         navigationBarItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = null) },
-                label = { Text(item.title) },
                 selected = currentRoute == item.route,
                 onClick = {
                     selectedItem = index
