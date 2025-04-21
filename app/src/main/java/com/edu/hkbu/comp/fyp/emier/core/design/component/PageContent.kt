@@ -24,11 +24,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,11 +45,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayer
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
 import com.edu.hkbu.comp.fyp.emier.utils.ExpandableAnnotatedText
 import com.edu.hkbu.comp.fyp.emier.utils.annotatedStringResource
+import com.edu.hkbu.comp.fyp.emier.viewModel.QuestionViewModel
 
 @Composable
 fun PageContent(
@@ -55,13 +60,15 @@ fun PageContent(
     @RawRes videoId: Int,
     items: List<Pair<Int, Int>>,
     @DrawableRes imageId: Int,
-    viewModel: VideoPlayerViewModel,
+    playViewModel: VideoPlayerViewModel,
     context: Context,
     pagerState: PagerState,
     currentPage: Int
 ) {
+    val questionViewModel: QuestionViewModel = viewModel()
+
     var isPlaying by remember { mutableStateOf(false) }
-    viewModel.mediaItem = videoId
+    playViewModel.mediaItem = videoId
 
     val isCurrentPage = pagerState.currentPage == currentPage
 
@@ -76,13 +83,10 @@ fun PageContent(
         // Title
         Text(
             text = annotatedStringResource(titleId),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 4.dp),
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
+
         // Video Player
         if (videoId != 0) {
             Box(
@@ -91,7 +95,7 @@ fun PageContent(
                     .height(250.dp)
                     .padding(bottom = 16.dp)
             ) {
-                VideoPlayer(viewModel = viewModel,
+                VideoPlayer(viewModel = playViewModel,
                     isPlaying = isPlaying,
                     onPlayerClosed = { isVideoPlaying ->
                         isPlaying = isVideoPlaying
@@ -99,40 +103,25 @@ fun PageContent(
                 )
             }
         }
+
         // Content
         if (contentId != 0) {
             ExpandableAnnotatedText(id = contentId, fontSize = 16.sp)
         }
+
+        // Survey
+        if (titleId == R.string.my_automatic_thoughts) {
+            Survey(context = context)
+        }
+
         // Draggable text
         if (titleId == R.string.analysis) {
-            DraggableText(annotatedStringResource(R.string.anxiety_story))
-            QuestionCard(
-                title = "身體反應",
-                question = "每天下班回家路上致電琪琪媽媽問當天的功課",
-                answer = "面紅耳赤、手心冒汗、心跳加快"
-            )
+            DragAndDrop(questionViewModel)
         }
+
         // Key cards
-        LazyRow {
-            itemsIndexed(items) { _, item ->
-                OutlinedCard(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .width(240.dp)
-                        .height(160.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            annotatedStringResource(item.first),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        Text(annotatedStringResource(item.second), fontSize = 14.sp)
-                    }
-                }
-            }
-        }
+        KeyCards(items)
+
         // Any Image to display
         if (imageId != 0) {
             Image(
@@ -144,52 +133,23 @@ fun PageContent(
         }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            playViewModel.releasePlayer()
+        }
+    }
+
     LaunchedEffect(isCurrentPage) {
         if (isCurrentPage && videoId != 0) {
             isPlaying = true
-            viewModel.apply {
+            playViewModel.apply {
                 releasePlayer()
                 initializePlayer(context)
                 playVideo(context)
             }
         } else {
             isPlaying = false
-            viewModel.releasePlayer()
+            playViewModel.releasePlayer()
         }
-    }
-}
-
-@Composable
-fun DraggableText(annotatedString: AnnotatedString) {
-    val draggableWords = annotatedString.getStringAnnotations("draggable", 0, annotatedString.length)
-    Column {
-        LazyRow {
-            items(draggableWords) { word ->
-                DraggableWord(word.item)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun DraggableWord(word: String) {
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .background(Color.LightGray)
-            .dragAndDropSource {
-                detectTapGestures(onLongPress = {
-                    startTransfer(
-                        DragAndDropTransferData(
-                            ClipData.newPlainText("text", word),
-                            flags = View.DRAG_FLAG_GLOBAL
-                        )
-                    )
-                }
-                )
-            }
-    ) {
-        Text(text = word, modifier = Modifier.padding(8.dp))
     }
 }

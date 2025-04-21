@@ -27,19 +27,12 @@ import com.edu.hkbu.comp.fyp.emier.R
 data class Video(
     val id: Int,
     val title: String,
-    val videoResId: Int
+    val videoResId: Int,
+    val captionId: Int
 )
 
 @Composable
-fun TutorialScreen(navController: NavHostController, playerViewModel: VideoPlayerViewModel) {
-    val context = LocalContext.current
-    val videos = listOf(
-        Video(1, "Introduction to Depression", R.raw.depression_part1),
-        Video(2, "Automatic Thoughts", R.raw.depression_part2),
-        Video(3, "Depression Story", R.raw.depression_story),
-        Video(4, "Guide Introduction", R.raw.introduction),
-        Video(5, "CBT Overview", R.raw.cbt)
-    )
+fun TutorialScreen(navController: NavHostController, videos: List<Video>) {
 
     LazyColumn(
         modifier = Modifier
@@ -50,11 +43,6 @@ fun TutorialScreen(navController: NavHostController, playerViewModel: VideoPlaye
             VideoItem(video = video, onClick = {
                 navController.navigate("video/${video.id}")
             })
-            Divider(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
         }
     }
 }

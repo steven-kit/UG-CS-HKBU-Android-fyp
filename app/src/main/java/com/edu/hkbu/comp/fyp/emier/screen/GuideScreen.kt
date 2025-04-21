@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.utils.ExpandableAnnotatedText
@@ -45,11 +45,14 @@ import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
 @Composable
 fun GuideScreen(navController: NavController, playerViewModel: VideoPlayerViewModel) {
-    val pagerState = rememberPagerState(pageCount = {
-        4
-    })
-
+    val pagerState = rememberPagerState(pageCount = { 4 })
     val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        onDispose {
+            playerViewModel.releasePlayer()
+        }
+    }
 
     Column(
         modifier = Modifier

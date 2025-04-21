@@ -46,10 +46,11 @@ import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.LonelyScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
 
 @Composable
-fun ScaffoldScreen(navController: NavHostController,
-                   userViewModel: UserViewModel,
-                   playerViewModel: VideoPlayerViewModel,
-                   startDestination: String
+fun ScaffoldScreen(
+    navController: NavHostController,
+    userViewModel: UserViewModel,
+    playerViewModel: VideoPlayerViewModel,
+    startDestination: String
 ) {
     val currentDestination by navController.currentBackStackEntryAsState()
 
@@ -75,12 +76,7 @@ fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostContr
     }
     
     TopAppBar(
-        title = { 
-//            currentDestination?.destination?.route?.let { route ->
-//            val destination = items.find { it.route == route }
-//            destination?.title?.let { Text(it) }
-//        } 
-        },
+        title = {},
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(id = R.color.blue)
         ),
@@ -127,11 +123,11 @@ fun Content(
         modifier = Modifier.padding(innerPadding),
     ) {
         val videos = listOf(
-            Video(1, "認識抑鬱", R.raw.depression_part1),
-            Video(2, "抑鬱的思想陷阱", R.raw.depression_part2),
-            Video(3, "抑鬱故事", R.raw.depression_story),
-            Video(4, "認識你的情緒", R.raw.introduction),
-            Video(5, "認知行爲治療", R.raw.cbt)
+            Video(1, "認識你的情緒", R.raw.introduction, R.string.splash_page1),
+            Video(2, "認知行爲治療", R.raw.cbt, R.string.splash_page4),
+            Video(3, "認識抑鬱", R.raw.depression_part1, R.string.depression_intro),
+            Video(4, "抑鬱的思想陷阱", R.raw.depression_part2, R.string.depression_intro2),
+            Video(5, "抑鬱故事", R.raw.depression_story, R.string.depression_story),
         )
 
         NavHost(
@@ -140,12 +136,12 @@ fun Content(
         ) {
             composable(Routes.Guide) { GuideScreen(navController, playerViewModel) }
             composable(Routes.Home) { HomeScreen(navController, userViewModel) }
-            composable(Routes.Tutorial) { TutorialScreen(navController, playerViewModel) }
+            composable(Routes.Tutorial) { TutorialScreen(navController, videos) }
             composable(Routes.Settings) { SettingsScreen(userViewModel) }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anger) { AngerScreen() }
-            composable(Routes.Anxiety) { AnxietyScreen(playerViewModel) }
-            composable(Routes.Depression) { DepressionScreen(playerViewModel) }
+            composable(Routes.Anxiety) { AnxietyScreen() }
+            composable(Routes.Depression) { DepressionScreen() }
             composable(Routes.Disappointment) { DisappointmentScreen() }
             composable(Routes.Guilt) { GuiltScreen() }
             composable(Routes.Lonely) { LonelyScreen() }

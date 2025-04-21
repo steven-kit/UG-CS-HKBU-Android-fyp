@@ -1,5 +1,6 @@
 package com.edu.hkbu.comp.fyp.emier.screen.feelingScreen
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
@@ -7,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,13 +16,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.core.design.component.PageContent
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
+import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
 
 data class Section(@StringRes val titleId: Int, @StringRes val contentId: Int, @RawRes val videoId: Int = 0, val items: List<Pair<Int, Int>> = emptyList(), @DrawableRes val imageId: Int = 0)
 
 @Composable
-fun AnxietyScreen(playerViewModel: VideoPlayerViewModel) {
+fun AnxietyScreen() {
     val context = LocalContext.current
-    val viewModel: VideoPlayerViewModel = viewModel()
+    val playerViewModel: VideoPlayerViewModel = viewModel()
 
     val sections = listOf(
         Section(R.string.what_is_anxiety, R.string.anxiety_intro,
@@ -66,9 +69,14 @@ fun AnxietyScreen(playerViewModel: VideoPlayerViewModel) {
             videoId = section.videoId,
             items = section.items,
             imageId = section.imageId,
-            context = context, viewModel = viewModel,
+            context = context, playViewModel = playerViewModel,
             pagerState = pagerState,
             currentPage = page
             )
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        val progress = (pagerState.currentPage + 1) / sections.size.toFloat()
+        ProgressUtil.saveProgress(context, "Anxiety", progress)
     }
 }

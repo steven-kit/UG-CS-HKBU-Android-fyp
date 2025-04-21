@@ -13,15 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun QuestionCard(title: String, question: String, answer: String) {
+fun QuestionCard(
+    title: String,
+    question: String,
+    answer: String,
+    onAnswerCorrect: () -> Unit
+) {
     var userAnswer by remember { mutableStateOf("") }
     var isCorrect by remember { mutableStateOf<Boolean?>(null) }
 
@@ -29,8 +32,11 @@ fun QuestionCard(title: String, question: String, answer: String) {
         object : DragAndDropTarget {
             override fun onDrop(event: DragAndDropEvent): Boolean {
                 val draggedItem = event.toAndroidDragEvent().clipData.getItemAt(0).text.toString()
-                userAnswer = draggedItem
-                isCorrect = userAnswer == answer
+                userAnswer = draggedItem.trim()
+                isCorrect = userAnswer == answer.trim()
+                if (isCorrect == true) {
+                    onAnswerCorrect()
+                }
                 return true
             }
 
@@ -72,14 +78,4 @@ fun QuestionCard(title: String, question: String, answer: String) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun QuestionCardPreview() {
-    QuestionCard(
-        title = "Sample Question",
-        question = "What is 2 + 2?",
-        answer = "4"
-    )
 }

@@ -1,22 +1,23 @@
 package com.edu.hkbu.comp.fyp.emier.screen.feelingScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.core.design.component.PageContent
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
+import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
 
 
 @Composable
-fun DepressionScreen(playerViewModel: VideoPlayerViewModel) {
+fun DepressionScreen() {
     val context = LocalContext.current
-    val viewModel: VideoPlayerViewModel = viewModel()
 
     val sections = listOf(
         Section(
@@ -43,7 +44,7 @@ fun DepressionScreen(playerViewModel: VideoPlayerViewModel) {
         modifier = Modifier.fillMaxSize()
     ) { page ->
         val section = sections[page]
-        val pageViewModel = remember { VideoPlayerViewModel() }
+        val playerViewModel = remember { VideoPlayerViewModel() }
         PageContent(
             titleId = section.titleId,
             contentId = section.contentId,
@@ -51,9 +52,14 @@ fun DepressionScreen(playerViewModel: VideoPlayerViewModel) {
             items = section.items,
             imageId = section.imageId,
             context = context,
-            viewModel = pageViewModel,
+            playViewModel = playerViewModel,
             pagerState = pagerState,
             currentPage = page
         )
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        val progress = (pagerState.currentPage + 1) / sections.size.toFloat()
+        ProgressUtil.saveProgress(context, "Depression", progress)
     }
 }
