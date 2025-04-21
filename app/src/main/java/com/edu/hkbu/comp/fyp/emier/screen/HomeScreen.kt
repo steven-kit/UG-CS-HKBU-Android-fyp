@@ -1,5 +1,8 @@
 package com.edu.hkbu.comp.fyp.emier.screen
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,20 +20,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.R
+import com.edu.hkbu.comp.fyp.emier.api.GarminApiService
+import com.edu.hkbu.comp.fyp.emier.api.RetrofitInstance
 import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
 import com.edu.hkbu.comp.fyp.emier.core.design.component.KnowMoreAboutYourFeelings
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Instant
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
     Column() {
@@ -40,9 +53,37 @@ fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Greeting(userViewModel: UserViewModel) {
     val token = userViewModel.token.value
+    var hasFetchedData by remember { mutableStateOf(false) }
+
+    LaunchedEffect(token, hasFetchedData) {
+        if (!token.isNullOrBlank() && !hasFetchedData) {
+            try {
+                Log.d("HomeScreen", "Fetching stress data with token: $token")
+                val endTime = Instant.now().epochSecond.toString()
+                val startTime = (Instant.now().epochSecond - 24 * 60 * 60).toString()
+
+                val response = RetrofitInstance.apiService.getStressData(
+                    uat = token,
+                    startTime = startTime,
+                    endTime = endTime
+                )
+
+                if (response.isSuccessful) {
+                    Log.d("HomeScreen", "Stress data fetched successfully: ${response.body()}")
+                } else {
+                    Log.e("HomeScreen", "Failed to fetch stress data: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("HomeScreen", "Error fetching stress data", e)
+            } finally {
+                hasFetchedData = true
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier

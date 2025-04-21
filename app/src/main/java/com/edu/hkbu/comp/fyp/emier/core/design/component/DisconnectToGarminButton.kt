@@ -15,11 +15,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.edu.hkbu.comp.fyp.emier.api.GarminApiService
+import com.edu.hkbu.comp.fyp.emier.api.RetrofitInstance
 import com.edu.hkbu.comp.fyp.emier.auth.TokenStorage
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun DisconnectToGarminButton(onDisconnected: () -> Unit) {
@@ -28,12 +26,6 @@ fun DisconnectToGarminButton(onDisconnected: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://emier-backend-caacbzexavbfa7gn.eastus-01.azurewebsites.net/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    val apiService = retrofit.create(GarminApiService::class.java)
 
     Button(
         onClick = { showDialog = true },
@@ -50,7 +42,7 @@ fun DisconnectToGarminButton(onDisconnected: () -> Unit) {
                     userAccessToken?.let { token ->
                         coroutineScope.launch {
                             try {
-                                val response = apiService.deregisterUser(token)
+                                val response = RetrofitInstance.apiService.deregisterUser(token)
                                 if (response.isSuccessful) {
                                     TokenStorage.deleteToken(context)
                                     snackbarHostState.showSnackbar("斷開成功")

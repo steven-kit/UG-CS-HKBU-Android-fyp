@@ -22,7 +22,6 @@ import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.screen.ScaffoldScreen
 import com.edu.hkbu.comp.fyp.emier.core.design.theme.AppTheme
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
-import com.edu.hkbu.comp.fyp.emier.screen.GuideScreen
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
 import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
