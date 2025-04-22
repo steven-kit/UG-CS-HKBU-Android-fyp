@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,20 +34,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.R
-import com.edu.hkbu.comp.fyp.emier.api.GarminApiService
 import com.edu.hkbu.comp.fyp.emier.api.RetrofitInstance
 import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.navigation.Routes
 import com.edu.hkbu.comp.fyp.emier.core.design.component.KnowMoreAboutYourFeelings
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Instant
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
+    var hasLaunchedEffect by rememberSaveable { mutableStateOf(false) }
     Column() {
-        Greeting(userViewModel)
+        Greeting(userViewModel, hasLaunchedEffect) {
+            hasLaunchedEffect = true
+        }
         RelaxCard(navController = navController)
         KnowMoreAboutYourFeelings(navController)
     }
@@ -55,12 +55,12 @@ fun HomeScreen(navController: NavHostController, userViewModel: UserViewModel){
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Greeting(userViewModel: UserViewModel) {
+fun Greeting(userViewModel: UserViewModel, hasLaunchedEffect: Boolean, onEffectLaunched: () -> Unit) {
     val token = userViewModel.token.value
-    var hasFetchedData by remember { mutableStateOf(false) }
+    val deviceToken = userViewModel.deviceToken.value
 
-    LaunchedEffect(token, hasFetchedData) {
-        if (!token.isNullOrBlank() && !hasFetchedData) {
+    LaunchedEffect(token, hasLaunchedEffect) {
+        if (!token.isNullOrBlank() && !hasLaunchedEffect) {
             try {
                 Log.d("HomeScreen", "Fetching stress data with token: $token")
                 val endTime = Instant.now().epochSecond.toString()
@@ -75,13 +75,20 @@ fun Greeting(userViewModel: UserViewModel) {
                 if (response.isSuccessful) {
                     Log.d("HomeScreen", "Stress data fetched successfully: ${response.body()}")
                 } else {
-                    Log.e("HomeScreen", "Failed to fetch stress data: ${response.errorBody()?.string()}")
+                    Log.e(
+                        "HomeScreen",
+                        "Failed to fetch stress data: ${response.errorBody()?.string()}"
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("HomeScreen", "Error fetching stress data", e)
             } finally {
-                hasFetchedData = true
+                onEffectLaunched()
             }
+        }
+        if (!deviceToken.isNullOrBlank() && !hasLaunchedEffect && token != null) {
+            userViewModel.registerDeviceToken(token, deviceToken)
+            onEffectLaunched()
         }
     }
 

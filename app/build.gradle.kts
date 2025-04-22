@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,7 +53,7 @@ android {
 
 dependencies {
 
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation(libs.firebase.messaging)
 
     // exo player
     val exoPlayerVersion = "1.2.1"
