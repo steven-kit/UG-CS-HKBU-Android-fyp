@@ -9,27 +9,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.MainActivity
 import com.edu.hkbu.comp.fyp.emier.auth.TokenStorage
 import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.core.design.component.ConnectToGarminButton
 import com.edu.hkbu.comp.fyp.emier.core.design.component.DisconnectToGarminButton
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-data class UserPreference(val fontSize: Float)
+import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
 @Composable
 fun SettingsScreen(userViewModel: UserViewModel) {
+    val context = LocalContext.current
     val connectionResult = MainActivity.connectionResult
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedFontSize by remember { mutableStateOf(16.sp) }
-    val fontSizes = listOf(12.sp, 16.sp, 20.sp)
+    val fontSizes = listOf(12.sp, 14.sp, 16.sp, 18.sp, 20.sp)
+    val selectedFontSize = userViewModel.fontSize.value
 
-    val context = LocalContext.current
     val token = userViewModel.token.value
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -45,6 +40,7 @@ fun SettingsScreen(userViewModel: UserViewModel) {
             })
             Log.d("SettingsScreen", "User Access Token: ${TokenStorage.getToken(LocalContext.current)}")
         }
+        Text(text = "連接Garmin Connect並戴上Garmin手帶以便監察你的壓力水平。", style = MaterialTheme.typography.labelMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -59,7 +55,8 @@ fun SettingsScreen(userViewModel: UserViewModel) {
                     DropdownMenuItem(
                         text = { Text(text = "${fontSize.value}sp") },
                         onClick = {
-                            selectedFontSize = fontSize
+                            userViewModel.updateFontSize(fontSize)
+                            PreferencesUtil.saveFontSize(context, fontSize.value)
                             expanded = false
                         }
                     )

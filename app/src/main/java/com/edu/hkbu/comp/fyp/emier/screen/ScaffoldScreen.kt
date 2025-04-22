@@ -1,5 +1,7 @@
 package com.edu.hkbu.comp.fyp.emier.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -22,16 +24,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.auth.UserViewModel
 import com.edu.hkbu.comp.fyp.emier.core.design.component.VideoDetailScreen
@@ -44,7 +46,9 @@ import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.DisappointmentScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.GuiltScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.LonelyScreen
 import com.edu.hkbu.comp.fyp.emier.screen.feelingScreen.NervousScreen
+import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScaffoldScreen(
     navController: NavHostController,
@@ -53,6 +57,9 @@ fun ScaffoldScreen(
     startDestination: String
 ) {
     val currentDestination by navController.currentBackStackEntryAsState()
+    val context = LocalContext.current
+    userViewModel.loadFontSize(context)
+    val fontSize = userViewModel.fontSize.value
 
     Scaffold(
         topBar = {
@@ -62,7 +69,7 @@ fun ScaffoldScreen(
             BottomNavigationBar(navController)
         },
         content = { innerPadding ->
-            Content(innerPadding, navController, playerViewModel, userViewModel, startDestination)
+            Content(fontSize, innerPadding, navController, playerViewModel, userViewModel, startDestination)
         }
     )
 }
@@ -111,8 +118,10 @@ fun MyTopBar(currentDestination: NavBackStackEntry?, navController: NavHostContr
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Content(
+    fontSize: TextUnit,
     innerPadding: PaddingValues,
     navController: NavHostController,
     playerViewModel: VideoPlayerViewModel,
@@ -135,7 +144,7 @@ fun Content(
             startDestination = startDestination,
         ) {
             composable(Routes.Guide) { GuideScreen(navController, playerViewModel) }
-            composable(Routes.Home) { HomeScreen(navController, userViewModel) }
+            composable(Routes.Home) { HomeScreen(fontSize, navController, userViewModel) }
             composable(Routes.Tutorial) { TutorialScreen(navController, videos) }
             composable(Routes.Settings) { SettingsScreen(userViewModel) }
             composable(Routes.Relax) { RelaxScreen() }
@@ -150,7 +159,7 @@ fun Content(
                 val videoId = backStackEntry.arguments?.getString("videoId")?.toIntOrNull()
                 val video = videos.find { it.id == videoId }
                 if (video != null) {
-                    VideoDetailScreen(video = video, playerViewModel = playerViewModel)
+                    VideoDetailScreen(fontSize = fontSize, video = video, playerViewModel = playerViewModel)
                 }
             }
         }

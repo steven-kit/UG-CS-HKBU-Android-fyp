@@ -22,13 +22,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.edu.hkbu.comp.fyp.emier.navigation.NavDestination
 import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
 
 @Composable
-fun KnowMoreAboutYourFeelings(navController: NavHostController, modifier: Modifier = Modifier) {
+fun KnowMoreAboutYourFeelings(fontSize: TextUnit, navController: NavHostController, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val progressMap = mapOf(
         "憤怒" to ProgressUtil.getProgress(context, "Anger"),
@@ -45,6 +46,7 @@ fun KnowMoreAboutYourFeelings(navController: NavHostController, modifier: Modifi
     }
 
     Text(text = "認識你的情緒多一點",
+        fontSize = fontSize,
         modifier = modifier.padding(8.dp),
         style = MaterialTheme.typography.labelLarge
     )
@@ -68,7 +70,7 @@ fun KnowMoreAboutYourFeelings(navController: NavHostController, modifier: Modifi
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(8.dp)
             ) {
-                FeelingIcon(feeling, destination, navController)
+                FeelingIcon(fontSize, feeling, destination, navController)
                 CircularProgressIndicator(
                     progress = progressMap[feeling]?.coerceIn(0f, 1f) ?: 0f,
                     modifier = Modifier
@@ -81,7 +83,7 @@ fun KnowMoreAboutYourFeelings(navController: NavHostController, modifier: Modifi
 }
 
 @Composable
-fun FeelingIcon(feeling: String, destination: NavDestination, navController: NavHostController) {
+fun FeelingIcon(fontSize: TextUnit, feeling: String, destination: NavDestination, navController: NavHostController) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -96,7 +98,7 @@ fun FeelingIcon(feeling: String, destination: NavDestination, navController: Nav
                 .size(88.dp)
                 .clip(CircleShape)
         )
-        Text(text = feeling,
+        Text(text = feeling, fontSize = fontSize,
             modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp)
         )
     }

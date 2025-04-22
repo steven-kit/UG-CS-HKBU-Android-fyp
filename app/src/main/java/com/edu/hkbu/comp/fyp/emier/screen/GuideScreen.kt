@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -186,14 +187,27 @@ fun GuidePage2() {
 
 @Composable
 fun SurveyForm() {
-    val options = listOf("Very Bad", "Bad", "Medium", "Good", "Very Good")
+    val context = LocalContext.current
+    val options = listOf("憤怒", "焦慮", "抑鬱", "失望", "内疚", "孤獨", "緊張")
+    var selectedOptions by remember { mutableStateOf(PreferencesUtil.getSelectedSurveyOptions(context)) }
+
     Column {
         options.forEach { option ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                RadioButton(selected = false, onClick = { /* Handle selection */ })
+                Checkbox(
+                    checked = selectedOptions.contains(option),
+                    onCheckedChange = { isChecked ->
+                        selectedOptions = if (isChecked) {
+                            selectedOptions + option
+                        } else {
+                            selectedOptions - option
+                        }
+                        PreferencesUtil.saveSelectedSurveyOptions(context, selectedOptions)
+                    }
+                )
                 Text(text = option, modifier = Modifier.padding(start = 8.dp))
             }
         }

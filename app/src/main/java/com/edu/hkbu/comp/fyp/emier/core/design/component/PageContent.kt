@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +51,7 @@ import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayer
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
 import com.edu.hkbu.comp.fyp.emier.utils.ExpandableAnnotatedText
+import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 import com.edu.hkbu.comp.fyp.emier.utils.annotatedStringResource
 import com.edu.hkbu.comp.fyp.emier.viewModel.QuestionViewModel
 
@@ -65,6 +67,8 @@ fun PageContent(
     pagerState: PagerState,
     currentPage: Int
 ) {
+    val fontSize = PreferencesUtil.getFontSize(context).sp
+
     val questionViewModel: QuestionViewModel = viewModel()
 
     var isPlaying by remember { mutableStateOf(false) }
@@ -106,7 +110,7 @@ fun PageContent(
 
         // Content
         if (contentId != 0) {
-            ExpandableAnnotatedText(id = contentId, fontSize = 16.sp)
+            ExpandableAnnotatedText(id = contentId, fontSize = fontSize,)
         }
 
         // Survey
@@ -116,11 +120,11 @@ fun PageContent(
 
         // Draggable text
         if (titleId == R.string.analysis) {
-            DragAndDrop(questionViewModel)
+            DragAndDrop(fontSize, questionViewModel)
         }
 
         // Key cards
-        KeyCards(items)
+        KeyCards(fontSize, items)
 
         // Any Image to display
         if (imageId != 0) {

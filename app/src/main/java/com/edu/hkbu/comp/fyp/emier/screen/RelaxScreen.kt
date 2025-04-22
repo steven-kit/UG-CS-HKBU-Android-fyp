@@ -10,11 +10,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.edu.hkbu.comp.fyp.emier.utils.PreferencesUtil
 
 @Composable
 fun RelaxScreen() {
     val context = LocalContext.current
+    val fontSize = PreferencesUtil.getFontSize(context).sp
     var selectedItems by remember { mutableStateOf(PreferencesUtil.getSelectedRelaxItems(context)) }
     var isEditing by remember { mutableStateOf(false) }
     val allActivities = listOf(
@@ -54,7 +56,7 @@ fun RelaxScreen() {
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = activity)
+                        Text(text = activity, fontSize = fontSize)
                         Checkbox(
                             checked = selectedItems.contains(activity),
                             onCheckedChange = { isChecked ->
@@ -82,6 +84,7 @@ fun RelaxScreen() {
                     ) {
                         Text(
                             text = activity,
+                            fontSize = fontSize,
                             modifier = Modifier.padding(16.dp),
                             style = MaterialTheme.typography.bodyLarge
                         )

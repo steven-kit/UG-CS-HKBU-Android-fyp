@@ -17,9 +17,12 @@ import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
+import androidx.compose.ui.unit.TextUnit
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuestionCard(
+    fontSize: TextUnit,
     title: String,
     question: String,
     answer: String,
@@ -65,7 +68,7 @@ fun QuestionCard(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = title, fontSize = fontSize, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = question, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(16.dp))

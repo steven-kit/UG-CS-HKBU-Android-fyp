@@ -21,19 +21,21 @@ import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.edu.hkbu.comp.fyp.emier.R
 import com.edu.hkbu.comp.fyp.emier.utils.annotatedStringResource
 import com.edu.hkbu.comp.fyp.emier.viewModel.QuestionViewModel
 
 @Composable
-fun DragAndDrop(questionViewModel: QuestionViewModel){
-    DraggableText(annotatedStringResource(R.string.anxiety_story))
+fun DragAndDrop(fontSize: TextUnit ,questionViewModel: QuestionViewModel){
+    DraggableText(fontSize, annotatedStringResource(R.string.anxiety_story))
     if (questionViewModel.currentQuestionIndex < questionViewModel.questionList.size) {
         val currentQuestion = questionViewModel.questionList[questionViewModel.currentQuestionIndex]
 
         key(questionViewModel.currentQuestionIndex) {
             QuestionCard(
+                fontSize = fontSize,
                 title = currentQuestion.title,
                 question = currentQuestion.question,
                 answer = currentQuestion.answer,
@@ -55,12 +57,12 @@ fun DragAndDrop(questionViewModel: QuestionViewModel){
 }
 
 @Composable
-fun DraggableText(annotatedString: AnnotatedString) {
+fun DraggableText(fontSize: TextUnit, annotatedString: AnnotatedString) {
     val draggableWords = annotatedString.getStringAnnotations("draggable", 0, annotatedString.length)
     Column {
         LazyRow {
             items(draggableWords) { word ->
-                DraggableWord(word.item)
+                DraggableWord(fontSize, word.item)
             }
         }
     }
@@ -68,7 +70,7 @@ fun DraggableText(annotatedString: AnnotatedString) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DraggableWord(word: String) {
+fun DraggableWord(fontSize: TextUnit, word: String) {
     Box(
         modifier = Modifier
             .padding(4.dp)
@@ -85,6 +87,6 @@ fun DraggableWord(word: String) {
                 )
             }
     ) {
-        Text(text = word, modifier = Modifier.padding(8.dp))
+        Text(text = word, fontSize = fontSize, modifier = Modifier.padding(8.dp))
     }
 }
