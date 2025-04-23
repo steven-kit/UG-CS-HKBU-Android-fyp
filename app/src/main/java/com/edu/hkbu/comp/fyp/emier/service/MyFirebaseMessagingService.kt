@@ -64,20 +64,31 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun showNotification(body: String) {
-        val message = try {
+        var title: String
+        var message: String
+        try {
             val stressLevel = body.toInt()
             when {
-                stressLevel == 0 || stressLevel == -1 -> "請佩戴Gamin手帶以監察你的壓力水平。"
-                stressLevel > 50 -> "是時候要放鬆一下了。"
-                else -> ""
+                stressLevel == 0 || stressLevel == -1 -> {
+                    title = "請佩戴Gamin手帶"
+                    message = "請佩戴Gamin手帶以監察你的壓力水平."
+                }
+                stressLevel > 50 -> {
+                    title = "是時候要放鬆一下了"
+                    message = "來看看你記錄下的放鬆活動吧"
+                }
+                else -> {
+                    title = ""
+                    message = ""
+                }
             }
         } catch (e: NumberFormatException) {
             Log.e(TAG, "Invalid stress level received: $body", e)
-            "收到無效的壓力數據。"
+            title = "收到無效的壓力數據。"
+            message = "請檢查你的Gamin手帶連接狀態。"
         }
-
         if (message.isNotEmpty()) {
-            NotificationUtil.showNotification(applicationContext, message)
+            NotificationUtil.showNotification(applicationContext, title, message)
         }
     }
 

@@ -149,8 +149,8 @@ fun Content(
             composable(Routes.Settings) { SettingsScreen(userViewModel) }
             composable(Routes.Relax) { RelaxScreen() }
             composable(Routes.Anger) { AngerScreen() }
-            composable(Routes.Anxiety) { AnxietyScreen() }
-            composable(Routes.Depression) { DepressionScreen() }
+            composable(Routes.Anxiety) { AnxietyScreen(fontSize) }
+            composable(Routes.Depression) { DepressionScreen(fontSize) }
             composable(Routes.Disappointment) { DisappointmentScreen() }
             composable(Routes.Guilt) { GuiltScreen() }
             composable(Routes.Lonely) { LonelyScreen() }

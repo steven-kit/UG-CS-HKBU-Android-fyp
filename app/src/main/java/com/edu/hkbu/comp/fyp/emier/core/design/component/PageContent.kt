@@ -120,7 +120,10 @@ fun PageContent(
 
         // Draggable text
         if (titleId == R.string.analysis) {
-            DragAndDrop(fontSize, questionViewModel)
+            when (contentId) {
+                R.string.anxiety_analysis_detail -> DragAndDrop(fontSize, questionViewModel, R.string.anxiety_story)
+                R.string.depression_analysis_detail -> DragAndDrop(fontSize, questionViewModel, R.string.depression_story)
+            }
         }
 
         // Key cards

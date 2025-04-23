@@ -28,10 +28,14 @@ import com.edu.hkbu.comp.fyp.emier.utils.annotatedStringResource
 import com.edu.hkbu.comp.fyp.emier.viewModel.QuestionViewModel
 
 @Composable
-fun DragAndDrop(fontSize: TextUnit ,questionViewModel: QuestionViewModel){
-    DraggableText(fontSize, annotatedStringResource(R.string.anxiety_story))
-    if (questionViewModel.currentQuestionIndex < questionViewModel.questionList.size) {
-        val currentQuestion = questionViewModel.questionList[questionViewModel.currentQuestionIndex]
+fun DragAndDrop(fontSize: TextUnit, questionViewModel: QuestionViewModel, draggableText: Int){
+    DraggableText(fontSize, annotatedStringResource(draggableText))
+    when (draggableText) {
+        R.string.anxiety_story -> questionViewModel.setAnxietyQuestionList()
+        R.string.depression_story -> questionViewModel.setDepressionQuestionList()
+    }
+    if (questionViewModel.currentQuestionIndex < questionViewModel.activeQuestionList.size) {
+        val currentQuestion = questionViewModel.activeQuestionList[questionViewModel.currentQuestionIndex]
 
         key(questionViewModel.currentQuestionIndex) {
             QuestionCard(
@@ -46,7 +50,7 @@ fun DragAndDrop(fontSize: TextUnit ,questionViewModel: QuestionViewModel){
         }
     } else {
         Text(
-            text = "全部答對了！！若果你是菲菲媽媽，也會有一樣的想法嗎？",
+            text = "全部答對了！！若果你是主角，也會有一樣的想法嗎？",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()

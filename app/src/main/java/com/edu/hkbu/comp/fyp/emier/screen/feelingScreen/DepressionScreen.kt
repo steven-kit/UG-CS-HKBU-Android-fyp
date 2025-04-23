@@ -9,14 +9,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.TextUnit
 import com.edu.hkbu.comp.fyp.emier.R
+import com.edu.hkbu.comp.fyp.emier.core.design.component.ABCTechniquesScreen
 import com.edu.hkbu.comp.fyp.emier.core.design.component.PageContent
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
 import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
 
 
 @Composable
-fun DepressionScreen() {
+fun DepressionScreen(fontSize: TextUnit) {
     val context = LocalContext.current
 
     val sections = listOf(
@@ -30,7 +32,9 @@ fun DepressionScreen() {
             )
         ),
         Section(R.string.automatic_thoughts, R.string.depression_intro2, R.raw.depression_part2),
-        Section(R.string.story, R.string.depression_story, R.raw.depression_story)
+        Section(R.string.story, R.string.depression_story, R.raw.depression_story),
+        Section(R.string.analysis, R.string.depression_analysis_detail),
+        Section(R.string.vicious_circle, R.string.depression_vicious_circle_content, imageId = R.drawable.depression_cycle),
     )
     val pagerState = rememberPagerState(
         pageCount = {
@@ -43,19 +47,23 @@ fun DepressionScreen() {
         userScrollEnabled = true,
         modifier = Modifier.fillMaxSize()
     ) { page ->
-        val section = sections[page]
-        val playerViewModel = remember { VideoPlayerViewModel() }
-        PageContent(
-            titleId = section.titleId,
-            contentId = section.contentId,
-            videoId = section.videoId,
-            items = section.items,
-            imageId = section.imageId,
-            context = context,
-            playViewModel = playerViewModel,
-            pagerState = pagerState,
-            currentPage = page
-        )
+        if (page == sections.lastIndex) {
+            ABCTechniquesScreen(fontSize)
+        } else {
+            val section = sections[page]
+            val playerViewModel = remember { VideoPlayerViewModel() }
+            PageContent(
+                titleId = section.titleId,
+                contentId = section.contentId,
+                videoId = section.videoId,
+                items = section.items,
+                imageId = section.imageId,
+                context = context,
+                playViewModel = playerViewModel,
+                pagerState = pagerState,
+                currentPage = page
+            )
+        }
     }
 
     LaunchedEffect(pagerState.currentPage) {

@@ -12,8 +12,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.edu.hkbu.comp.fyp.emier.R
+import com.edu.hkbu.comp.fyp.emier.core.design.component.ABCTechniquesScreen
+import com.edu.hkbu.comp.fyp.emier.core.design.component.ACCEPTSTechniquesScreen
 import com.edu.hkbu.comp.fyp.emier.core.design.component.PageContent
 import com.edu.hkbu.comp.fyp.emier.screen.VideoPlayerViewModel
 import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
@@ -21,7 +24,7 @@ import com.edu.hkbu.comp.fyp.emier.utils.ProgressUtil
 data class Section(@StringRes val titleId: Int, @StringRes val contentId: Int, @RawRes val videoId: Int = 0, val items: List<Pair<Int, Int>> = emptyList(), @DrawableRes val imageId: Int = 0)
 
 @Composable
-fun AnxietyScreen() {
+fun AnxietyScreen(fontSize: TextUnit) {
     val context = LocalContext.current
     val playerViewModel: VideoPlayerViewModel = viewModel()
 
@@ -49,8 +52,8 @@ fun AnxietyScreen() {
             )),
         Section(R.string.my_automatic_thoughts, R.string.anxiety_intro3),
         Section(R.string.story, R.string.anxiety_story),
-        Section(R.string.analysis, R.string.analysis_detail),
-        Section(R.string.vicious_circle, R.string.vicious_circle_content, imageId = R.drawable.anxiety_cycle),
+        Section(R.string.analysis, R.string.anxiety_analysis_detail),
+        Section(R.string.vicious_circle, R.string.depression_vicious_circle_content, imageId = R.drawable.anxiety_cycle),
     )
     val pagerState = rememberPagerState(
         pageCount = {
@@ -63,16 +66,21 @@ fun AnxietyScreen() {
         userScrollEnabled = true,
         modifier = Modifier.fillMaxSize()
     ) { page ->
-        val section = sections[page]
-        PageContent(titleId = section.titleId,
-            contentId = section.contentId,
-            videoId = section.videoId,
-            items = section.items,
-            imageId = section.imageId,
-            context = context, playViewModel = playerViewModel,
-            pagerState = pagerState,
-            currentPage = page
+        if (page == sections.lastIndex) {
+            ACCEPTSTechniquesScreen(fontSize)
+        } else {
+            val section = sections[page]
+            PageContent(
+                titleId = section.titleId,
+                contentId = section.contentId,
+                videoId = section.videoId,
+                items = section.items,
+                imageId = section.imageId,
+                context = context, playViewModel = playerViewModel,
+                pagerState = pagerState,
+                currentPage = page
             )
+        }
     }
 
     LaunchedEffect(pagerState.currentPage) {

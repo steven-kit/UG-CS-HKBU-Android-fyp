@@ -32,7 +32,7 @@ object NotificationUtil {
         }
     }
 
-    fun showNotification(context: Context, message: String) {
+    fun showNotification(context: Context, title: String, message: String) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -50,7 +50,7 @@ object NotificationUtil {
         // Build the notification
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.splash_image)
-            .setContentTitle("Stress Alert")
+            .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
